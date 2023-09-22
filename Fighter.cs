@@ -1,8 +1,7 @@
 public class Fighter : PlayerClass 
 {
-  private static readonly int numStartingProficiencySelections = 2;
-  // Player gets these proficiencies simply by selecting the Fighter class
-  private static readonly string[] startingClassProficiencies = {
+  private static string[] defaultStartingProficiencies = new string[]
+  {
     Proficiency.LightArmor, 
     Proficiency.MediumArmor,
     Proficiency.HeavyArmor,
@@ -13,8 +12,10 @@ public class Fighter : PlayerClass
     Proficiency.ConstitutionSavingThrows
   };
 
-  // Player must choose additional proficiencies from this pool
-  private static readonly string[] possibleStartingSkillProficiencies = {
+  public override string[] DefaultStartingProficiencies { get => defaultStartingProficiencies; }
+
+  private static string[] startingProficiencyOptions = new string[]
+  {
     Proficiency.Acrobatics,
     Proficiency.AnimalHandling,
     Proficiency.Athletics,
@@ -25,13 +26,21 @@ public class Fighter : PlayerClass
     Proficiency.Survival
   };
 
+  public override string[] StartingProficiencyOptions { get => startingProficiencyOptions; }
+
+  public override string[][] StartingEquipmentOptionGroups { get {
+    string[][] startingEquipmentOptions = new string[4][];
+    startingEquipmentOptions[0] = new string[] { "Chain Mail", "Leather Armor" };
+    startingEquipmentOptions[1] = new string[] { "Chain Mail", "Leather Armor" };
+    startingEquipmentOptions[2] = new string[] { "Chain Mail", "Leather Armor" };
+    startingEquipmentOptions[3] = new string[] { "Chain Mail", "Leather Armor" };
+    return startingEquipmentOptions;
+  }}
+
+  public override int NumStartingProficiencySelections { get => 2; }
+
   // public const int hitDiceSides = 10;
-  public Fighter(
-    int level
-  ) : base(
-    numStartingProficiencySelections, 
-    startingClassProficiencies, 
-    possibleStartingSkillProficiencies)
+  public Fighter(int level) : base()
   {
     this.level = level;
   }

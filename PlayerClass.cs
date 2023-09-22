@@ -1,32 +1,52 @@
 public abstract class PlayerClass 
 {
-  protected HashSet<string> proficiencies = new HashSet<string>();
   protected int level;
+  public abstract string[] DefaultStartingProficiencies { get; } // instead of string, should be Proficiency
+  public abstract string[] StartingProficiencyOptions { get; }
+  public abstract string[][] StartingEquipmentOptionGroups { get; }
+  public abstract int NumStartingProficiencySelections { get; }
 
-  // abstract property with get accessor for starting profincies and selectablesp
+  // abstract static private property with get accessor for starting profincies and selectablesp
 
-  protected PlayerClass(
-    int numStartingProficiencySelections,
-    string[] defaultStartingProficiencies, 
-    string[] selectableStartingProficiencies)
+  protected PlayerClass()
   {
-    // Add default class proficiencies
-    proficiencies.UnionWith(defaultStartingProficiencies);
+    // Roll for HP (depends on level, hit dice, and constitution) - Player?
 
-    // User must choose class skill proficiencies
-    SelectProficiencies(selectableStartingProficiencies, numStartingProficiencySelections);
+    // Choose class skill proficiencies
+    SelectProficiencies(StartingProficiencyOptions, NumStartingProficiencySelections);
+
+    // Choose class equipment
+    SelectEquipment(StartingEquipmentOptionGroups);
+
+    // Choose class spells
+
+    // Choose class features
   }
 
   // FIX: You may consider moving this to the Player class
-  private void SelectProficiencies(string[] possibleProficiencies, int numSelections)
+  private string[] SelectProficiencies(string[] proficiencyOptions, int numSelections)
   {
-    SelectionMenu consoleMenu = new SelectionMenu(
-      possibleProficiencies,
+    SelectionMenu optionsMenu = new SelectionMenu(
+      proficiencyOptions,
       $"Choose {numSelections} from the following skill proficiencies",
       "Add selection to your proficiencies?",
       numSelections
     );
-    string[] selectedSkillProficiencies = consoleMenu.GetSelections();
-    this.proficiencies.UnionWith(selectedSkillProficiencies);
+    return optionsMenu.GetSelections();
+  }
+
+  private string[] SelectEquipment(string[][] equipmentOptionGroups)
+  {
+    string[] equipmentSelections = new string[equipmentOptionGroups.Length];
+    for(int i = 0; i < equipmentOptionGroups.Length; i++)
+    {
+      SelectionMenu equipmentMenu = new SelectionMenu(
+        equipmentOptionGroups[i],
+        "Choose one of the following equipment options"
+      );
+      string[] selectedEquipment = equipmentMenu.GetSelections();
+      equipmentSelections[i] = selectedEquipment[0];
+    }
+    return equipmentSelections;
   }
 }
